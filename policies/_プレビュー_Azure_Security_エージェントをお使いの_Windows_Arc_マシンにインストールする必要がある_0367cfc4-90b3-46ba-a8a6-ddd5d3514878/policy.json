@@ -1,0 +1,66 @@
+{
+ "properties": {
+  "displayName": "[プレビュー]: Azure Security エージェントをお使いの Windows Arc マシンにインストールする必要がある",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "description": "お使いのマシンのセキュリティ構成および脆弱性を監視するには、お使いの Windows Arc マシンに Azure Security エージェントをインストールします。評価の結果は、Azure Security Center で確認および管理できます。",
+  "metadata": {
+   "category": "Security Center",
+   "version": "1.0.0-preview",
+   "preview": true
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "結果",
+     "description": "ポリシーの実行を有効または無効にします"
+    },
+    "allowedValues": [
+     "AuditIfNotExists",
+     "Disabled"
+    ],
+    "defaultValue": "AuditIfNotExists"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.HybridCompute/machines"
+     },
+     {
+      "field": "Microsoft.HybridCompute/imageOffer",
+      "like": "windows*"
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]",
+    "details": {
+     "type": "Microsoft.HybridCompute/machines/extensions",
+     "existenceCondition": {
+      "allOf": [
+       {
+        "field": "Microsoft.HybridCompute/machines/extensions/type",
+        "equals": "AzureSecurityWindowsAgent"
+       },
+       {
+        "field": "Microsoft.HybridCompute/machines/extensions/Publisher",
+        "equals": "Microsoft.Azure.Security.Monitoring"
+       },
+       {
+        "field": "Microsoft.HybridCompute/machines/extensions/provisioningState",
+        "equals": "Succeeded"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Authorization/policyDefinitions/0367cfc4-90b3-46ba-a8a6-ddd5d3514878",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "0367cfc4-90b3-46ba-a8a6-ddd5d3514878"
+}

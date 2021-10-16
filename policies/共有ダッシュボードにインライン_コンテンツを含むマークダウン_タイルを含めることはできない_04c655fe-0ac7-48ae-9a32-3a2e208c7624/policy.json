@@ -1,0 +1,83 @@
+{
+ "properties": {
+  "displayName": "共有ダッシュボードにインライン コンテンツを含むマークダウン タイルを含めることはできない",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "description": "マークダウン タイル内のインライン コンテンツを含む共有ダッシュボードの作成を禁止し、コンテンツがオンラインでホストされているマークダウン ファイルとして保存されるように強制します。マークダウン タイル内のインライン コンテンツを使用する場合、コンテンツの暗号化は管理できません。独自のストレージを構成することにより、暗号化、二重暗号化、独自のキーの使用が可能です。このポリシーを有効にすると、ユーザーは 2020-09-01-preview 以降のバージョンの共有ダッシュボード REST API の使用が制限されます。",
+  "metadata": {
+   "version": "1.0.0",
+   "category": "Portal"
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "効果",
+     "description": "その効果によって、ポリシー規則が一致すると評価されたときの動作が決まります"
+    },
+    "allowedValues": [
+     "Audit",
+     "Deny",
+     "Disabled"
+    ],
+    "defaultValue": "Audit"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.Portal/dashboards"
+     },
+     {
+      "anyof": [
+       {
+        "not": {
+         "value": "[requestContext().apiVersion]",
+         "greaterOrEquals": "2020-09-01-alpha"
+        }
+       },
+       {
+        "count": {
+         "field": "Microsoft.Portal/dashboards/lenses[*].parts[*]",
+         "where": {
+          "allOf": [
+           {
+            "field": "Microsoft.Portal/dashboards/lenses[*].parts[*].metadata.type",
+            "equals": "Extension/HubsExtension/PartType/MarkdownPart"
+           },
+           {
+            "anyOf": [
+             {
+              "field": "Microsoft.Portal/dashboards/lenses[*].parts[*].metadata.Extension-HubsExtension-PartType-MarkdownPart.settings.content.settings.markdownUri",
+              "exists": "false"
+             },
+             {
+              "field": "Microsoft.Portal/dashboards/lenses[*].parts[*].metadata.Extension-HubsExtension-PartType-MarkdownPart.settings.content.settings.markdownSource",
+              "exists": "false"
+             },
+             {
+              "field": "Microsoft.Portal/dashboards/lenses[*].parts[*].metadata.Extension-HubsExtension-PartType-MarkdownPart.settings.content.settings.markdownSource",
+              "equals": "1"
+             }
+            ]
+           }
+          ]
+         }
+        },
+        "greater": 0
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Authorization/policyDefinitions/04c655fe-0ac7-48ae-9a32-3a2e208c7624",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "04c655fe-0ac7-48ae-9a32-3a2e208c7624"
+}

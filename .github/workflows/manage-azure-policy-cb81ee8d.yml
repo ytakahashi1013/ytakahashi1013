@@ -1,0 +1,44 @@
+name: manage-azure-policy-cb81ee8d
+on:
+  workflow_dispatch:
+    inputs:
+      remarks:
+        description: 'Reason for triggering the workflow run'
+        required: false
+        default: 'Updating Azure Policies'
+
+
+## Uncomment the following if you wish to automatically trigger workflow run with every commit
+#
+#  push:
+#    paths:
+#      - 'policies/ディザスター_リカバリーを構成されていない仮想マシンの監査_0015ea4d-51ff-4ce3-8d8c-f3f8f0179a56/**'
+#      - 'policies/_プレビュー_Azure_Security_エージェントをお使いの_Windows_Arc_マシンにインストールする必要がある_0367cfc4-90b3-46ba-a8a6-ddd5d3514878/**'
+#      - 'policies/ストレージ_アカウント_キーが期限切れにならないようにする必要がある_044985bb-afe1-42cd-8a36-9d5d42424537/**'
+#      - 'policies/_プレビュー_ネットワーク_トラフィック_データ収集エージェントを_Linux_仮想マシンにインストールする必要がある_04c4380f-3fae-46e8-96c9-30193528f602/**'
+#      - 'policies/共有ダッシュボードにインライン_コンテンツを含むマークダウン_タイルを含めることはできない_04c655fe-0ac7-48ae-9a32-3a2e208c7624/**'
+#      - 'policies/サービス_バスの診断設定を_Log_Analytics_ワークスペースにデプロイする_04d53d87-841c-4f23-8a5b-21564380b55e/**'
+#      - 'policies/Linux_VM_用の_Log_Analytics_拡張機能をデプロイする_053d3325-282c-4e5c-b944-24faffd30d77/**'
+#      - .github/workflows/manage-azure-policy-cb81ee8d.yml
+jobs:
+  apply-azure-policy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS_cb81ee8d}}
+        allow-no-subscriptions: true
+    - name: Create or Update Azure Policies
+      uses: azure/manage-azure-policy@v0
+      with:
+        paths: |
+          policies/ディザスター_リカバリーを構成されていない仮想マシンの監査_0015ea4d-51ff-4ce3-8d8c-f3f8f0179a56/**
+          policies/_プレビュー_Azure_Security_エージェントをお使いの_Windows_Arc_マシンにインストールする必要がある_0367cfc4-90b3-46ba-a8a6-ddd5d3514878/**
+          policies/ストレージ_アカウント_キーが期限切れにならないようにする必要がある_044985bb-afe1-42cd-8a36-9d5d42424537/**
+          policies/_プレビュー_ネットワーク_トラフィック_データ収集エージェントを_Linux_仮想マシンにインストールする必要がある_04c4380f-3fae-46e8-96c9-30193528f602/**
+          policies/共有ダッシュボードにインライン_コンテンツを含むマークダウン_タイルを含めることはできない_04c655fe-0ac7-48ae-9a32-3a2e208c7624/**
+          policies/サービス_バスの診断設定を_Log_Analytics_ワークスペースにデプロイする_04d53d87-841c-4f23-8a5b-21564380b55e/**
+          policies/Linux_VM_用の_Log_Analytics_拡張機能をデプロイする_053d3325-282c-4e5c-b944-24faffd30d77/**

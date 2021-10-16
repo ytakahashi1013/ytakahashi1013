@@ -1,0 +1,55 @@
+{
+ "properties": {
+  "displayName": "ストレージ アカウント キーが期限切れにならないようにする必要がある",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "description": "アカウント キーのセキュリティを向上させるために、キーの有効期限ポリシーが設定されている場合、ユーザー ストレージ アカウント キーが期限切れになるときにアクションを行うことによって、それらのキーが期限切れにならないようにしてください。",
+  "metadata": {
+   "version": "3.0.0",
+   "category": "Storage"
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "効果",
+     "description": "監査の場合、非準拠のリソースを作成できますが、非準拠としてフラグが設定されます。拒否の場合はリソースの作成および更新がブロックされます。無効の場合、ポリシーがオフになります。"
+    },
+    "allowedValues": [
+     "Audit",
+     "Deny",
+     "Disabled"
+    ],
+    "defaultValue": "Audit"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.Storage/storageAccounts"
+     },
+     {
+      "anyOf": [
+       {
+        "value": "[utcNow()]",
+        "greater": "[if(and(not(empty(coalesce(field('Microsoft.Storage/storageAccounts/keyCreationTime.key1'), ''))), not(empty(string(coalesce(field('Microsoft.Storage/storageAccounts/keyPolicy.keyExpirationPeriodInDays'), ''))))), addDays(field('Microsoft.Storage/storageAccounts/keyCreationTime.key1'), field('Microsoft.Storage/storageAccounts/keyPolicy.keyExpirationPeriodInDays')), utcNow())]"
+       },
+       {
+        "value": "[utcNow()]",
+        "greater": "[if(and(not(empty(coalesce(field('Microsoft.Storage/storageAccounts/keyCreationTime.key2'), ''))), not(empty(string(coalesce(field('Microsoft.Storage/storageAccounts/keyPolicy.keyExpirationPeriodInDays'), ''))))), addDays(field('Microsoft.Storage/storageAccounts/keyCreationTime.key2'), field('Microsoft.Storage/storageAccounts/keyPolicy.keyExpirationPeriodInDays')), utcNow())]"
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Authorization/policyDefinitions/044985bb-afe1-42cd-8a36-9d5d42424537",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "044985bb-afe1-42cd-8a36-9d5d42424537"
+}
