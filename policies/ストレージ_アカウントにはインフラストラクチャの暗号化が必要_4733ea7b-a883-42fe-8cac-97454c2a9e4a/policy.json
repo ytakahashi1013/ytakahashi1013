@@ -1,0 +1,47 @@
+{
+ "properties": {
+  "displayName": "ストレージ アカウントにはインフラストラクチャの暗号化が必要",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "description": "データがセキュリティで保護されるために、高レベルのインフラストラクチャ暗号化を有効にします。インフラストラクチャの暗号化を有効にすると、ストレージ アカウントのデータが 2 回暗号化されます。",
+  "metadata": {
+   "version": "1.0.0",
+   "category": "Storage"
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "効果",
+     "description": "監査ポリシーの実行を有効または無効にします"
+    },
+    "allowedValues": [
+     "Audit",
+     "Deny",
+     "Disabled"
+    ],
+    "defaultValue": "Audit"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.Storage/storageAccounts"
+     },
+     {
+      "field": "Microsoft.Storage/storageAccounts/encryption.requireInfrastructureEncryption",
+      "notEquals": "true"
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Authorization/policyDefinitions/4733ea7b-a883-42fe-8cac-97454c2a9e4a",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "4733ea7b-a883-42fe-8cac-97454c2a9e4a"
+}

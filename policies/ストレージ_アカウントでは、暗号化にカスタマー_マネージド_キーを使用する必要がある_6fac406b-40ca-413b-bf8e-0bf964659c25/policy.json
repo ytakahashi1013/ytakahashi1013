@@ -1,0 +1,48 @@
+{
+ "properties": {
+  "displayName": "ストレージ アカウントでは、暗号化にカスタマー マネージド キーを使用する必要がある",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "description": "カスタマー マネージド キーを使用して、BLOB およびファイルのストレージ アカウントをより柔軟に保護します。カスタマー マネージド キーを指定すると、そのキーが、データを暗号化するキーへのアクセスの保護と制御に使用されます。カスタマー マネージド キーを使用すると、キー暗号化キーの交換を制御したり、暗号化を使ってデータを消去したりすることもできます。",
+  "metadata": {
+   "version": "1.0.3",
+   "category": "Storage"
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "効果",
+     "description": "ポリシーの実行を有効または無効にします"
+    },
+    "allowedValues": [
+     "Audit",
+     "Disabled"
+    ],
+    "defaultValue": "Audit"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.Storage/storageAccounts"
+     },
+     {
+      "not": {
+       "field": "Microsoft.Storage/storageAccounts/encryption.keySource",
+       "equals": "Microsoft.Keyvault"
+      }
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Authorization/policyDefinitions/6fac406b-40ca-413b-bf8e-0bf964659c25",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "6fac406b-40ca-413b-bf8e-0bf964659c25"
+}

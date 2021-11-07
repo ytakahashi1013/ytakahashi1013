@@ -1,0 +1,63 @@
+{
+ "properties": {
+  "displayName": "ストレージ アカウントへの安全な転送を有効にする必要がある",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "description": "ストレージ アカウントにおける、セキュリティで保護された転送の要件を監査します。セキュリティで保護された転送とは、セキュリティで保護された (HTTPS) 接続からの要求のみをストレージ アカウントで受け入れるようにするオプションです。HTTPS を使用することにより、サーバーとサービスの間の認証が確実に行われ、転送中のデータをネットワーク層の攻撃 (中間者、傍受、セッション ハイジャックなど) から保護します",
+  "metadata": {
+   "version": "2.0.0",
+   "category": "Storage"
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "エフェクト",
+     "description": "その効果によって、ポリシー規則が一致すると評価されたときの動作が決まります"
+    },
+    "allowedValues": [
+     "Audit",
+     "Deny",
+     "Disabled"
+    ],
+    "defaultValue": "Audit"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.Storage/storageAccounts"
+     },
+     {
+      "anyOf": [
+       {
+        "allOf": [
+         {
+          "value": "[requestContext().apiVersion]",
+          "less": "2019-04-01"
+         },
+         {
+          "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+          "exists": "false"
+         }
+        ]
+       },
+       {
+        "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+        "equals": "false"
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Authorization/policyDefinitions/404c3081-a854-4457-ae30-26a93ef643f9",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "404c3081-a854-4457-ae30-26a93ef643f9"
+}

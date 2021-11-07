@@ -1,0 +1,40 @@
+name: manage-azure-policy-6b8dc825
+on:
+  workflow_dispatch:
+    inputs:
+      remarks:
+        description: 'Reason for triggering the workflow run'
+        required: false
+        default: 'Updating Azure Policies'
+
+
+## Uncomment the following if you wish to automatically trigger workflow run with every commit
+#
+#  push:
+#    paths:
+#      - 'policies/ストレージ_アカウントへの安全な転送を有効にする必要がある_404c3081-a854-4457-ae30-26a93ef643f9/**'
+#      - 'policies/ストレージ_アカウントにはインフラストラクチャの暗号化が必要_4733ea7b-a883-42fe-8cac-97454c2a9e4a/**'
+#      - 'policies/_プレビュー_ストレージ_アカウントのパブリック_アクセスを禁止する必要がある_4fa4b6c0-31ca-4c0d-b10d-24b96f62a751/**'
+#      - 'policies/ストレージ_アカウントでは、暗号化にカスタマー_マネージド_キーを使用する必要がある_6fac406b-40ca-413b-bf8e-0bf964659c25/**'
+#      - 'policies/ストレージ_アカウントを許可されている_SKU_で制限する必要がある_7433c107-6db4-4ad1-b57a-a76dce0154a1/**'
+#      - .github/workflows/manage-azure-policy-6b8dc825.yml
+jobs:
+  apply-azure-policy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS_6b8dc825}}
+        allow-no-subscriptions: true
+    - name: Create or Update Azure Policies
+      uses: azure/manage-azure-policy@v0
+      with:
+        paths: |
+          policies/ストレージ_アカウントへの安全な転送を有効にする必要がある_404c3081-a854-4457-ae30-26a93ef643f9/**
+          policies/ストレージ_アカウントにはインフラストラクチャの暗号化が必要_4733ea7b-a883-42fe-8cac-97454c2a9e4a/**
+          policies/_プレビュー_ストレージ_アカウントのパブリック_アクセスを禁止する必要がある_4fa4b6c0-31ca-4c0d-b10d-24b96f62a751/**
+          policies/ストレージ_アカウントでは、暗号化にカスタマー_マネージド_キーを使用する必要がある_6fac406b-40ca-413b-bf8e-0bf964659c25/**
+          policies/ストレージ_アカウントを許可されている_SKU_で制限する必要がある_7433c107-6db4-4ad1-b57a-a76dce0154a1/**

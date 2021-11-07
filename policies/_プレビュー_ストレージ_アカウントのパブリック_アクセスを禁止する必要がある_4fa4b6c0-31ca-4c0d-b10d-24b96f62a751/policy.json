@@ -1,0 +1,72 @@
+{
+ "properties": {
+  "displayName": "[プレビュー]: ストレージ アカウントのパブリック アクセスを禁止する必要がある",
+  "policyType": "BuiltIn",
+  "mode": "Indexed",
+  "description": "Azure Storage 内のコンテナーと BLOB に対する匿名のパブリック読み取りアクセスは、データを共有するのに便利な方法ですが、セキュリティ上のリスクになるおそれがあります。好ましくない匿名アクセスによってデータが侵害されるのを防ぐために、Microsoft では、お客様のシナリオで特に必要でない限り、ストレージ アカウントへのパブリック アクセスを使用しないことをお勧めします。",
+  "metadata": {
+   "version": "3.0.1-preview",
+   "category": "Storage",
+   "preview": true
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "効果",
+     "description": "その効果によって、ポリシー規則が一致すると評価されたときの動作が決まります"
+    },
+    "allowedValues": [
+     "audit",
+     "deny",
+     "disabled"
+    ],
+    "defaultValue": "audit"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "Microsoft.Storage/storageAccounts"
+     },
+     {
+      "not": {
+       "allOf": [
+        {
+         "field": "id",
+         "contains": "/resourceGroups/aro-"
+        },
+        {
+         "anyOf": [
+          {
+           "field": "name",
+           "like": "cluster*"
+          },
+          {
+           "field": "name",
+           "like": "imageregistry*"
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "not": {
+       "field": "Microsoft.Storage/storageAccounts/allowBlobPublicAccess",
+       "equals": "false"
+      }
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]"
+   }
+  }
+ },
+ "id": "/providers/Microsoft.Authorization/policyDefinitions/4fa4b6c0-31ca-4c0d-b10d-24b96f62a751",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "4fa4b6c0-31ca-4c0d-b10d-24b96f62a751"
+}
